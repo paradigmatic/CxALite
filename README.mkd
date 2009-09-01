@@ -1,0 +1,85 @@
+Description
+===========
+
+_CxALite_ is...
+
+
+License and ownership
+---------------------
+
+_CxALite_ is an free open source library released under GNU GPLv3 license
+(see the LICENSE file included in the bundle).
+
+Copyright University of Geneva (Jean-Luc Falcone), 2009. All rights reserved.
+
+
+Installation
+============
+
+Requirements
+------------
+
+ * Java plateform JDK (tested and developed with 1.6 but 1.5 should also work).
+
+Additionaly, you will need to install the [ant]{http://ant.apache.org/} tool if
+you want to build it from source.
+
+Download
+--------
+
+You can grab the latest archives of _CxALite_ project at GitHub
+[download page](http://github.com/paradigmatic/_CxALite_/downloads).
+
+Alternatively, you can use the Git source manager to directly clone the current
+developement repository with:
+
+        $ git clone git://github.com/paradigmatic/xxx
+
+Binary edition
+--------------
+
+Simply download and unpack the tarball. The jar can be directly used in classpath
+and the documentation is already generated.
+
+Source edition
+--------------
+
+The project use ant as a build tool. To compile and produce the jar:
+
+        $ ant jar
+
+To compile the javadoc:
+
+        $ ant doc
+
+To run the tests:
+
+        $ ant tests
+
+The required dependencies are included in the lib directory.
+
+
+Usage
+=====
+
+To use it, just append the 'CxAlite.jar' to your classpath.
+(xxx)
+
+Examples
+========
+
+
+Support and Collaboration
+=========================
+
+You can get help through the following methods:
+
+* Read the project [wiki](http://wiki.github.com/paradigmatic/facade/)
+* Open an entry in the project [issue tracker](http://github.com/paradigmatic/facade/issues)
+* Email the project maintainer: jean-luc[dot]falcone[at]unige[dot]ch
+
+Do not hesitate to send critics and feature requests.
+
+The project is hosted by [github](http://github.com). If you want to
+collaborate, you are encouraged to create an account there (basic accounts
+are free). The full source is browsable in the [project homepage](http://github.com/paradigmatic/CxALite/tree/master).
