@@ -1,14 +1,44 @@
 Description
 ===========
 
-_CxALite_ is...
+_CxALite_ is a lightweight java library allowing users to couple
+concurrent process as describe in [Complex
+Automata]{http://www.complex-automata.org/} (CxA) theory. It is particularly
+suited for scientific computing to parallelize and couple multi-scale
+and multi-science models. In its current implementation, _CxALite_
+works only on shared-memory machines (multi-core and/or multi-cpu).
+
+_CxALite_ was written to match strictly the CxA execution model described in
+
+> P.M.A. Sloot and A.G. Hoekstra, Modeling Dynamic Systems with
+  Cellular Automata", in Handbook of Dynamic System Modeling, Edior:
+  Paul A. Fishwick, Series: Chapman & Hall/CRC Computer & Information
+  Science Series (to be published).
+
+Another open source implementation of CxA called
+[_MUSCLE_]{http://muscle.berlios.de/} (Multiscale Coupling Library and
+Environment) is available also. MUSCLE is _CxALite_ big brother and has the following advantages:
+
+  * MUSCLE allows to couple code written in Java, C, C++ and
+    Fortran, where CxALite is limited to Java code.
+  * MUSCLE allows to split a simulation on several machines.
+  * MUSCLE contains facilities to manage physical units.
+
+However, CxALite has a few advantages over MUSCLE:
+
+  * CxALite has no dependencies (except the standard Java runtime).
+  * CxALite has a very compact code base (less than 350 lines of code).
+  * CxALite is particularly unobstrusive, allowing fast experimentation
+    and prototyping.
+
 
 
 License and ownership
 ---------------------
 
 _CxALite_ is an free open source library released under GNU GPLv3 license
-(see the LICENSE file included in the bundle).
+(see the LICENSE file included in the bundle). It was developped during
+EU founded research project [COAST]{http://www.complex-automata.org/}. 
 
 Copyright University of Geneva (Jean-Luc Falcone), 2009. All rights reserved.
 
@@ -19,7 +49,12 @@ Installation
 Requirements
 ------------
 
- * Java plateform JDK (tested and developed with 1.6 but 1.5 should also work).
+There is only one requirement:
+
+ * Java platform JDK (tested and developed with 1.6 but 1.5 should also work).
+
+_CxALite_ will thus work on every machine with a valid java
+installation (Linux, MacOSX, Solaris, Windows, etc.)
 
 Additionaly, you will need to install the [ant]{http://ant.apache.org/} tool if
 you want to build it from source.
@@ -33,13 +68,15 @@ You can grab the latest archives of _CxALite_ project at GitHub
 Alternatively, you can use the Git source manager to directly clone the current
 developement repository with:
 
-        $ git clone git://github.com/paradigmatic/xxx
+        $ git://github.com/paradigmatic/CxALite.git
+
 
 Binary edition
 --------------
 
 Simply download and unpack the tarball. The jar can be directly used in classpath
 and the documentation is already generated.
+
 
 Source edition
 --------------
@@ -63,10 +100,14 @@ Usage
 =====
 
 To use it, just append the 'CxAlite.jar' to your classpath.
-(xxx)
+
+_To be done_
+
 
 Examples
 ========
+
+Have a look in 'cxa.examples' packages for examples.
 
 
 Support and Collaboration
