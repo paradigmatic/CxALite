@@ -1,28 +1,11 @@
-/*  
- * This file is part of CxALite
- *
- *  Facade is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Facade is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
- *
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-
 package cxa.examples.laplace;
 
 import cxa.CxA;
-import java.util.Properties;
+import cxa.util.Properties;
 
 /**
  *
@@ -44,11 +27,11 @@ public class Laplace {
         CxA cxa = new CxA("Laplace");
 
         Properties prop = cxa.properties();
-        prop.setProperty("total.time", ""+totalTime );
-        prop.setProperty("width", "" + width);
-        prop.setProperty("height", "" + height);
-        prop.setProperty("total.width", "" + totalWidth);
-        prop.setProperty("num.workers", "" + numOfSolvers);
+        prop.putInt("total.time", totalTime );
+        prop.putInt("width", width);
+        prop.putInt("height", height);
+        prop.putInt("total.width", totalWidth);
+        prop.putInt("num.workers", numOfSolvers);
         //prop.setProperty("out.file", "laplace.pgm");
 
         for (int i = 0; i < numOfSolvers; i++) {

@@ -1,24 +1,7 @@
-/*  
- * This file is part of CxALite
- *
- *  Facade is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Facade is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
- *
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-
 package cxa.examples.laplace;
 
 import cxa.CxA;
@@ -51,13 +34,13 @@ public class Collector implements Kernel {
     public void initialize(String ID, CxA cxa) {
         this.cxa = cxa;
         id = ID;
-        numProd = new Integer(cxa.properties().getProperty("num.workers"));
-        height = new Integer(cxa.properties().getProperty("height"));
-        width = new Integer(cxa.properties().getProperty("total.width"));
+        numProd = cxa.properties().getInt("num.workers");
+        height = cxa.properties().getInt("height");
+        width = cxa.properties().getInt("total.width");
         stripeWidth = width / numProd;
         domain = new double[height][width];
         maxValue = 0;
-        filename = cxa.properties().getProperty("out.file");
+        filename = cxa.properties().getString("out.file");
         in = new ConduitExit[numProd];
     }
 
@@ -83,9 +66,6 @@ public class Collector implements Kernel {
             CxA.logger().severe(id + ": trouble while saving file. " + ex);
         }
     }
-
-    @Override
-    public void after() {}
 
     private void updateMax(double[] d) {
         for (int i = 0; i < d.length; i++) {

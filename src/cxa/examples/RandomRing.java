@@ -1,24 +1,7 @@
-/*  
- * This file is part of CxALite
- *
- *  Facade is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Facade is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
- *
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-
 package cxa.examples;
 
 import cxa.CxA;
@@ -53,7 +36,7 @@ public class RandomRing implements Kernel {
     public void initialize( String ID, CxA cxa ) {
         this.ID = ID;
         this.cxa = cxa;
-        maxInt = new Integer( cxa.properties().getProperty( "maxInt" ) );
+        maxInt = cxa.properties().getInt( "maxInt" );
         RNG = new Random();
     }
 
@@ -75,16 +58,12 @@ public class RandomRing implements Kernel {
 
     }
 
-    @Override
-    public void after() {
-    }
-
     public static void main( String[] args ) throws InterruptedException {
         int maxInt = 1000;
         int numOfKernels = 4;
         CxA cxa = new CxA( "RandomRing" );
         CxA.logger().setLevel( Level.INFO );
-        cxa.properties().setProperty( "maxInt", Integer.toString( maxInt ) );
+        cxa.properties().putInt("maxInt", maxInt );
         for( int i = 0; i < numOfKernels; i++ ) {
             cxa.addKernel( RandomRing.class, "Node" + i );
         }

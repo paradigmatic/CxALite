@@ -1,24 +1,3 @@
-/*  
- * This file is part of CxALite
- *
- *  Facade is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Facade is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
- *
- */
-
-
 package cxa;
 
 import cxa.components.conduits.BasicConduitFactory;
@@ -28,10 +7,10 @@ import cxa.components.conduits.ConduitExit;
 import cxa.components.conduits.ConduitFactory;
 import cxa.components.kernel.Kernel;
 import cxa.components.kernel.KernelWrapper;
-import java.lang.reflect.Field;
+import cxa.util.Connector;
+import cxa.util.Properties;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -40,6 +19,8 @@ import java.util.logging.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static cxa.util.ReflectionHelper.*;
 
 /**
  * The CxA class represents a whole complex automaton. It contains all components
@@ -59,52 +40,6 @@ public class CxA {
         h.setLevel( l );
         LOGGER.addHandler( h );
         LOGGER.setLevel( l );
-    }
-
-    private static <T> Field findField( Object object, String name, Class<T> klass ) throws NoSuchFieldException {
-        Field f = object.getClass().getDeclaredField( name );
-        f.setAccessible( true );
-        if ( f.getType() == klass ) {
-            return f;
-        } else {
-            return null;
-        }
-    }
-
-    private static <T> T getField( Object object, String name, Class<T> klass ) {
-        try {
-            Field f = findField( object, name, klass );
-            try {
-                return (T) f.get( object );
-            } catch ( IllegalArgumentException ex ) {
-                Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-            } catch ( IllegalAccessException ex ) {
-                Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-            }
-        } catch ( NoSuchFieldException ex ) {
-            Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-        } catch ( SecurityException ex ) {
-            Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-        }
-        return null;
-
-    }
-
-    private static <T> void setField( Object object, String field, Class<T> klass, Object value ) {
-        try {
-            Field f = findField( object, field, klass );
-            try {
-                f.set( object, value );
-            } catch ( IllegalArgumentException ex ) {
-                Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-            } catch ( IllegalAccessException ex ) {
-                Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-            }
-        } catch ( NoSuchFieldException ex ) {
-            Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, null, ex );
-            Logger.getLogger( CxA.class.getName() ).log( Level.SEVERE, "########> " + object.toString() );
-
-        }
     }
 
     /* Define ports (entries and exits of conduits) */
@@ -133,59 +68,6 @@ public class CxA {
                     index = -1;
                 } else {
                     throw new IllegalArgumentException( "The port description is not valid: " + description );
-                }
-            }
-        }
-    }
-
-    public class Connector {
-
-        private CxA cxa;
-        private String from;
-        private String to;
-        private Conduit conduit;
-        private String conduitID;
-
-        public Connector( CxA cxa ) {
-            this.cxa = cxa;
-        }
-
-        public Connector from( String from ) {
-            this.from = from;
-            return this;
-        }
-
-        public Connector to( String to ) {
-            this.to = to;
-            tryConnection();
-            return this;
-        }
-
-        public Connector with( String conduitID ) {
-            this.conduitID = conduitID;
-            tryConnection();
-
-            return this;
-        }
-
-        public Connector with( ConduitFactory conduitFactory, String conduitID ) {
-            return with( conduitFactory.newInstance(), conduitID );
-        }
-
-        public Connector with( Conduit conduit, String conduitID ) {
-            this.conduit = conduit;
-            this.conduitID = conduitID;
-            tryConnection();
-
-            return this;
-        }
-
-        private void tryConnection() {
-            if ( to != null && conduitID != null ) {
-                if ( conduit == null ) {
-                    cxa.connect( from, to, ID );
-                } else {
-                    cxa.connect( from, to, conduit, conduitID );
                 }
             }
         }
@@ -272,7 +154,7 @@ public class CxA {
      * @param conduitID An unique name for the conduit.
      * @see setDefaultConduitFactory()
      */
-    private void connect( String fromStr, String toStr, String conduitID ) {
+    public void connect( String fromStr, String toStr, String conduitID ) {
         connect( fromStr, toStr, defaultFactory.newInstance(), conduitID );
     }
 
@@ -283,7 +165,7 @@ public class CxA {
      * @param conFac A conduit factory.
      * @param conduitID An unique name for the conduit.
      */
-    private void connect( String fromStr, String toStr, Conduit conduit, String conduitID ) {
+    public void connect( String fromStr, String toStr, Conduit conduit, String conduitID ) {
         conduit.initialize( conduitID, this );
         /* Attaching the to kernel */
         Port fromPort = new Port( fromStr );
@@ -292,8 +174,6 @@ public class CxA {
             ConduitEntrance[] entrances = getField( fromKernel, fromPort.field, ConduitEntrance[].class ); //TODO: check if not already connected
             entrances[fromPort.index] = conduit;
         } else {
-
-
             setField( fromKernel, fromPort.field, ConduitEntrance.class, conduit ); //TODO: check if not already connected
         }
         conduit.register( fromKernel ); //TODO: cĥeck if registering was OK.
@@ -320,7 +200,6 @@ public class CxA {
         for( KernelWrapper kw : kernels.values() ) {
             ( new Thread( kw ) ).start();
         }
-
         stopLatch.await();
         LOGGER.info( "CxA terminated." );
     }

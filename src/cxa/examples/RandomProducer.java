@@ -1,24 +1,7 @@
-/*  
- * This file is part of CxALite
- *
- *  Facade is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Facade is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
- *
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-
 package cxa.examples;
 
 import cxa.CxA;
@@ -68,7 +51,7 @@ public class RandomProducer implements Kernel {
     public void initialize(String ID, CxA cxa) {
         this.ID = ID;
         this.cxa = cxa;
-        maxCount = new Integer(cxa.properties().getProperty("maxCount"));
+        maxCount = cxa.properties().getInt("maxCount");
         RNG = new Random();
     }
 
@@ -93,7 +76,7 @@ public class RandomProducer implements Kernel {
      public static void main(String[] args) throws InterruptedException {
         int maxCount = 11;
         CxA cxa = new CxA("Random Producer");
-        cxa.properties().setProperty("maxCount", "11");
+        cxa.properties().putInt("maxCount", 11);
         FilteredConduitFactory factory = new FilteredConduitFactory();
         factory.addFilter(new TwoValuesAdderFilter());
         cxa.addKernel(Consumer.class, "consumer");
