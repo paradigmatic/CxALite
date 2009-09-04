@@ -211,7 +211,6 @@ public class CxA {
         } else {
             setField( toKernel, toPort.field, ConduitExit.class, conduit ); //TODO: check if not already connected
         }
-
         conduit.registerReceiver( toKernel ); //TODO: cĥeck if registering was OK.
         conduits.add( conduit );
     }
