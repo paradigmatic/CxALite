@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 /**
  * This conduits works like a basic conduit except that data is passed through a
@@ -38,6 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author falcone
  */
 public class FilteredConduit<E, F> implements Conduit<E, F> {
+
 
     private class EndFilter implements Filter {
 
@@ -69,12 +69,12 @@ public class FilteredConduit<E, F> implements Conduit<E, F> {
     private final LinkedBlockingQueue<F> outgoing = new LinkedBlockingQueue<F>();
     private final List<Filter> filters = new ArrayList<Filter>();
     private Filter lastAddedFilter = null;
-    private final Lock numOfConnectionsLock = new ReentrantLock();
     private final AtomicBoolean stopped = new AtomicBoolean(false);
     private String ID;
     private CxA cxa;
-    private int numOfConnections;
     private DataPump pump = new DataPump();
+    private Kernel sender;
+    private Kernel receiver;
 
     public void initialize(String id, CxA cxa) {
         this.ID = id;
@@ -116,28 +116,54 @@ public class FilteredConduit<E, F> implements Conduit<E, F> {
         }
     }
 
-    public void register(Kernel k) {
-        CxA.logger().config("Conduit " + ID + ": Registering kernel " + k.ID());
-        numOfConnectionsLock.lock();
-        numOfConnections++;
-        if (numOfConnections == 2) {
-            Filter f = new EndFilter();
-            addFilter( f );
-            pump.start();
-        }
-        numOfConnectionsLock.unlock();
-    }
 
-    public void unregister(Kernel k) {
-        CxA.logger().config("Conduit " + ID + ": UnRegistering kernel " + k.ID());
-        numOfConnectionsLock.lock();
-        numOfConnections--;
-        if (numOfConnections == 0) {
+     public synchronized void unregister(Kernel k) {
+       CxA.logger().config("Conduit " + ID + ": UnRegistering kernel " + k.ID() );
+       if( k == sender ) {
+           sender = null;
+       } else if( k == receiver ) {
+           receiver = null;
+       } else {
+           throw new IllegalStateException( "Kernel " + k.ID() + " was never registred in conduit " + k.ID() );
+       }
+       if( sender == null && receiver == null ) {
             pump.interrupt();
             incoming.clear();
             outgoing.clear();
+          }
+    }
+    
+    @Override
+    public Kernel getSenderKernel() {
+        return sender;
+    }
+
+    @Override
+    public Kernel getReceiverKernel() {
+        return receiver;
+    }
+
+    @Override
+    public void registerSender( Kernel k ) {
+        CxA.logger().config("Conduit " + ID + ": registering sender kernel " + k.ID() );
+        if( sender == null) {
+            sender = k;
+
+        } else {
+            throw new IllegalStateException("The sender kernel is already registered in conduit " + ID );
         }
-        numOfConnectionsLock.unlock();
+        Filter f = new EndFilter();
+        addFilter( f );
+    }
+
+    @Override
+    public void registerReceiver( Kernel k ) {
+        CxA.logger().config("Conduit " + ID + ": registering receiver kernel " + k.ID() );
+        if( receiver == null) {
+            receiver = k;
+        } else {
+            throw new IllegalStateException("The receiver kernel is already registered in conduit " + ID );
+        }
     }
 
     public String ID() {
