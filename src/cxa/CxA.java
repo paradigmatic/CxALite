@@ -30,7 +30,9 @@ import cxa.components.kernel.Kernel;
 import cxa.components.kernel.KernelWrapper;
 import cxa.util.Connector;
 import cxa.util.Properties;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.ConsoleHandler;
@@ -96,6 +98,7 @@ public class CxA {
     private Properties props;
     private ConduitFactory defaultFactory = new BasicConduitFactory();
     private Map<String, KernelWrapper> kernels;
+    private List<Conduit> conduits;
     private CountDownLatch stopLatch;
     private final String ID;
 
@@ -110,6 +113,7 @@ public class CxA {
                 new Properties();
         kernels =
                 new HashMap<String, KernelWrapper>();
+        conduits = new ArrayList<Conduit>();
     }
 
     /**
@@ -197,7 +201,7 @@ public class CxA {
         } else {
             setField( fromKernel, fromPort.field, ConduitEntrance.class, conduit ); //TODO: check if not already connected
         }
-        conduit.register( fromKernel ); //TODO: cĥeck if registering was OK.
+        conduit.registerSender( fromKernel ); //TODO: cĥeck if registering was OK.
         /* Attaching the to kernel */
         Port toPort = new Port( toStr );
         Kernel toKernel = kernels.get( toPort.kernel ).getKernel(); //TODO: check if exists
@@ -207,7 +211,9 @@ public class CxA {
         } else {
             setField( toKernel, toPort.field, ConduitExit.class, conduit ); //TODO: check if not already connected
         }
-        conduit.register( toKernel ); //TODO: cĥeck if registering was OK.
+
+        conduit.registerReceiver( toKernel ); //TODO: cĥeck if registering was OK.
+        conduits.add( conduit );
     }
 
     /**
@@ -224,4 +230,25 @@ public class CxA {
         stopLatch.await();
         LOGGER.info( "CxA terminated." );
     }
+
+    /**
+     * Provides a lists containing all the declared conduits.
+     * @return The conduit list
+     */
+    public List<Conduit> getConduits() {
+        return conduits;
+    }
+
+    /**
+     * Provides a list containing all the declared kernels.
+     * @return The kernel list
+     */
+    public List<Kernel> getKernels() {
+        List<Kernel> kerns = new ArrayList<Kernel>();
+        for( KernelWrapper k : kernels.values() ) {
+            kerns.add( k.getKernel() );
+        }
+        return kerns;
+    }
 }
+
