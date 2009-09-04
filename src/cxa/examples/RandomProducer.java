@@ -17,8 +17,6 @@
  *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
  *
  */
-
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -50,59 +48,55 @@ public class RandomProducer implements Kernel {
         return ID;
     }
 
-    public void run() {
-        try {
-            for (int count = 0; count < maxCount; count++) {
-                int nextInt = RNG.nextInt(20);
-                CxA.logger().fine("SubModel " + ID + ": sending " + nextInt);
-                out.send(nextInt);
-
-                Thread.sleep(50);
+    public void run()  {
+        for( int count = 0; count < maxCount; count++ ) {
+            int nextInt = RNG.nextInt( 20 );
+            CxA.logger().fine( "SubModel " + ID + ": sending " + nextInt );
+            out.send( nextInt );
+            try {
+                Thread.sleep( 50 );
+            } catch ( InterruptedException ex ) {
+                Logger.getLogger( RandomProducer.class.getName() ).log( Level.SEVERE, null, ex );
             }
-            CxA.logger().info("SubModel " + ID + ": sending stop signal");
-            out.stop();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(RandomProducer.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            out.unregister(this);
-            cxa.stopLatch().countDown();
         }
+        CxA.logger().info( "SubModel " + ID + ": sending stop signal" );
+        out.stop();
     }
 
-    public void initialize(String ID, CxA cxa) {
+    public void initialize( String ID, CxA cxa ) {
         this.ID = ID;
         this.cxa = cxa;
-        maxCount = cxa.properties().getInt("maxCount");
+        maxCount = cxa.properties().getInt( "maxCount" );
         RNG = new Random();
     }
 
     public void mainLoop() throws StopSignalException {
-        for (int count = 0; count < maxCount; count++) {
-            int nextInt = RNG.nextInt(20);
-            CxA.logger().fine("SubModel " + ID + ": sending " + nextInt);
-            out.send(nextInt);
+        for( int count = 0; count < maxCount; count++ ) {
+            int nextInt = RNG.nextInt( 20 );
+            CxA.logger().fine( "SubModel " + ID + ": sending " + nextInt );
+            out.send( nextInt );
             try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(RandomProducer.class.getName()).log(Level.SEVERE, null, ex);
+                Thread.sleep( 50 );
+            } catch ( InterruptedException ex ) {
+                Logger.getLogger( RandomProducer.class.getName() ).log( Level.SEVERE, null, ex );
             }
         }
-        CxA.logger().info("SubModel " + ID + ": sending stop signal");
+        CxA.logger().info( "SubModel " + ID + ": sending stop signal" );
         out.stop();
     }
 
     public void after() {
     }
 
-     public static void main(String[] args) throws InterruptedException {
+    public static void main( String[] args ) throws InterruptedException {
         int maxCount = 11;
-        CxA cxa = new CxA("Random Producer");
-        cxa.properties().putInt("maxCount", 11);
+        CxA cxa = new CxA( "Random Producer" );
+        cxa.properties().putInt( "maxCount", 11 );
         FilteredConduitFactory factory = new FilteredConduitFactory();
-        factory.addFilter(new TwoValuesAdderFilter());
-        cxa.addKernel(Consumer.class, "consumer");
-        cxa.addKernel(RandomProducer.class, "producer");
-        cxa.connect("producer.out").to( "consumer.in").with( factory, "conduit");
+        factory.addFilter( new TwoValuesAdderFilter() );
+        cxa.addKernel( Consumer.class, "consumer" );
+        cxa.addKernel( RandomProducer.class, "producer" );
+        cxa.connect( "producer.out" ).to( "consumer.in" ).with( factory, "conduit" );
         cxa.execute();
     }
 }
