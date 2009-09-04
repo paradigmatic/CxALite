@@ -125,12 +125,12 @@ public class KernelWrapper implements Runnable {
                 f.setAccessible(true);
                 Class type = f.getType();
                 if (type == ConduitEntrance.class || type == ConduitExit.class) {
-                    ConduitCommon cc = (ConduitCommon) f.get(kernel);
-                    cc.unregister(kernel);
+                    Conduit c = (Conduit) f.get(kernel);
+                    c.unregister(kernel);
                 } else if (type == ConduitEntrance[].class || type == ConduitExit[].class) {
-                   ConduitCommon[] ccAry = (ConduitCommon[]) f.get(kernel);
-                   for( ConduitCommon cc: ccAry ) {
-                       cc.unregister(kernel);
+                   Conduit[] ccAry = (Conduit[]) f.get(kernel);
+                   for( Conduit c: ccAry ) {
+                       c.unregister(kernel);
                    }
                 }
             }

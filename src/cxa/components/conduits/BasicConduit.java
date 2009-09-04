@@ -26,7 +26,6 @@ import cxa.components.StopSignalException;
 import cxa.components.kernel.Kernel;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Basic conduit implementation. Stores the data received from the sending kernel
@@ -35,10 +34,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BasicConduit<E> implements Conduit<E,E> {
 
     private final LinkedBlockingQueue<E> queue = new LinkedBlockingQueue<E>();
-    private final AtomicInteger numOfConnections = new AtomicInteger(0);
     private final AtomicBoolean stopped = new AtomicBoolean(false);
     private String ID;
     private CxA cxa;
+    private Kernel sender;
+    private Kernel receiver;
     
     public void initialize(String id, CxA cxa) {
         this.ID = id;
@@ -67,17 +67,19 @@ public class BasicConduit<E> implements Conduit<E,E> {
         }
     }
 
-    public void register(Kernel k) {
-        CxA.logger().config("Conduit " + ID + ": Registering kernel " + k.ID() );
-        numOfConnections.incrementAndGet();
-    }
 
-    public void unregister(Kernel k) {
+    public synchronized void unregister(Kernel k) {
        CxA.logger().config("Conduit " + ID + ": UnRegistering kernel " + k.ID() );
-        numOfConnections.decrementAndGet();
-        if (numOfConnections.get() == 0) {
-            queue.clear();
-        }
+       if( k == sender ) {
+           sender = null;
+       } else if( k == receiver ) {
+           receiver = null;
+       } else {
+           throw new IllegalStateException( "Kernel " + k.ID() + " was never registred in conduit " + k.ID() );
+       }
+       if( sender == null && receiver == null ) {
+           queue.clear();
+       }
     }
 
     public String ID() {
@@ -87,6 +89,36 @@ public class BasicConduit<E> implements Conduit<E,E> {
     public void stop() {
         CxA.logger().info("Conduit " + ID + ": Received stop signal." );
         stopped.set(true);
+    }
+
+    @Override
+    public Kernel getSenderKernel() {
+        return sender;
+    }
+
+    @Override
+    public Kernel getReceiverKernel() {
+        return receiver;
+    }
+
+    @Override
+    public void registerSender( Kernel k ) {
+        CxA.logger().config("Conduit " + ID + ": registering sender kernel " + k.ID() );
+        if( sender == null) {
+            sender = k;
+        } else {
+            throw new IllegalStateException("The sender kernel is already registered in conduit " + ID );
+        }
+    }
+
+    @Override
+    public void registerReceiver( Kernel k ) {
+        CxA.logger().config("Conduit " + ID + ": registering receiver kernel " + k.ID() );
+        if( receiver == null) {
+            receiver = k;
+        } else {
+            throw new IllegalStateException("The receiver kernel is already registered in conduit " + ID );
+        }
     }
 
 
