@@ -197,7 +197,7 @@ public class CxA {
         } else {
             setField( fromKernel, fromPort.field, ConduitEntrance.class, conduit ); //TODO: check if not already connected
         }
-        conduit.register( fromKernel ); //TODO: cĥeck if registering was OK.
+        conduit.registerSender( fromKernel ); //TODO: cĥeck if registering was OK.
         /* Attaching the to kernel */
         Port toPort = new Port( toStr );
         Kernel toKernel = kernels.get( toPort.kernel ).getKernel(); //TODO: check if exists
@@ -207,7 +207,7 @@ public class CxA {
         } else {
             setField( toKernel, toPort.field, ConduitExit.class, conduit ); //TODO: check if not already connected
         }
-        conduit.register( toKernel ); //TODO: cĥeck if registering was OK.
+        conduit.registerReceiver( toKernel ); //TODO: cĥeck if registering was OK.
     }
 
     /**
