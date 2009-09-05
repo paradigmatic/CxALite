@@ -37,6 +37,19 @@ public class GraphMLFormat implements ExportFormat {
 
     private static final String NS = "http://graphml.graphdrawing.org/xmlns"; //XML Namespace
 
+     /**
+     * Syntactical sugar to export a CxA with the GraphML format. The call will return
+     * an Exporter object set with CxA. So the to() method must be called to start
+     * the export. Example usage:
+     * <pre>GraphMLFormat.export( cxa ).to( System.out );</pre>
+     * @param cxa the cxa to export
+     * @return an exporter instance set with the cxa
+     */
+    public static Exporter export( CxA cxa ) {
+        return new Exporter( new GraphMLFormat() ).export( cxa );
+    }
+
+
     @Override
     public void export( CxA cxa, PrintStream ps ) throws IOException {
 

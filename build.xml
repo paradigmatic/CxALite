@@ -20,7 +20,7 @@
         
     <target name="compile">
         <mkdir dir="${build.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${build.dir}" excludes="cxa/extra/">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" excludes="cxa/extra/**">
             <classpath>
                 <path location="${build.dir}/${ant.project.name}.jar"/>
             </classpath>
@@ -30,7 +30,7 @@
                 <path location="${build.dir}/${ant.project.name}.jar"/>
 		<path refid="libpath" />
             </classpath>
-        </javac>	
+        </javac>
     </target>
     
     <target name="jar" depends="compile">
