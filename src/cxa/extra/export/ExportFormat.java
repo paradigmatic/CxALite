@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package cxa.util.export;
+package cxa.extra.export;
 
 import cxa.CxA;
 import java.io.IOException;

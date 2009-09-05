@@ -3,13 +3,11 @@
  * and open the template in the editor.
  */
 
-package cxa.util.export;
+package cxa.extra.export;
 
 import cxa.CxA;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 

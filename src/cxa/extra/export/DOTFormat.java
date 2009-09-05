@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cxa.util.export;
+package cxa.extra.export;
 
 import cxa.CxA;
 import cxa.components.conduits.Conduit;
