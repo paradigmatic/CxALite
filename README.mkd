@@ -49,7 +49,7 @@ Installation
 Requirements
 ------------
 
-There is only one requirement:
+There is only one requirement for the core middleware:
 
  * Java platform JDK (tested and developed with 1.6 but 1.5 should also work).
 
@@ -58,6 +58,9 @@ installation (Linux, MacOSX, Solaris, Windows, etc.)
 
 Additionaly, you will need to install the [ant](http://ant.apache.org/) tool if
 you want to build it from source.
+
+However optional extra code provided in _cxa.extra_ package requires extra depencies. However, all the depencies are bundled in the releases. Currently, CxALite extra needs:
+  * [XOM](http://www.xom.nu/) a nice XML writer/parser, less verbose than java standard API.
 
 Download
 --------
@@ -89,20 +92,19 @@ To compile the javadoc:
 
         $ ant doc
 
-To run the tests:
-
-        $ ant tests
-
-The required dependencies are included in the lib directory.
+The required dependencies for the extra package are included in the lib directory.
 
 
-Usage
-=====
+Documentation
+=============
 
-To use it, just append the 'CxAlite.jar' to your classpath.
+To use it, just append the needed jar to your classpath. There are currently thre jars:
 
-_To be done_
+  * *CxALite.jar:* the middleware base, requiring no extra depencies except a standard java environment.
+  * *CxALite-examples.jar:* the compiled examples.
+  * *CxALite-extra.jar:* extra class requiring dependencies found in the lib directory.
 
+Documentation is provided as *guides* in the [wiki pages](http://wiki.github.com/paradigmatic/CxALite) and *javadoc apis* in the release bundle.
 
 Examples
 ========
