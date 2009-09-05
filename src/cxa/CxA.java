@@ -17,8 +17,6 @@
  *  (c) 2009, University of Geneva (Jean-Luc Falcone), jean-luc.falcone@unige.ch
  *
  */
-
-
 package cxa;
 
 import cxa.components.conduits.BasicConduitFactory;
@@ -103,8 +101,7 @@ public class CxA {
      * Default constructor for instanciating a CxA
      * @param ID The CxA name (used in loggout).
      */
-    public CxA(
-            String ID ) {
+    public CxA( String ID ) {
         this.ID = ID;
         props =
                 new Properties();
@@ -126,6 +123,14 @@ public class CxA {
      */
     public Properties properties() {
         return props;
+    }
+
+    /**
+     * Return the CxA ID
+     * @return the CxA ID
+     */
+    public String ID() {
+        return ID;
     }
 
     /**
