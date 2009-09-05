@@ -60,6 +60,7 @@ Additionaly, you will need to install the [ant](http://ant.apache.org/) tool if
 you want to build it from source.
 
 However optional extra code provided in _cxa.extra_ package requires extra depencies. However, all the depencies are bundled in the releases. Currently, CxALite extra needs:
+
   * [XOM](http://www.xom.nu/) a nice XML writer/parser, less verbose than java standard API.
 
 Download
