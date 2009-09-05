@@ -24,7 +24,10 @@
     
     <target name="jar" depends="compile">
         <mkdir dir="${dist.dir}"/>
-        <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}">
+        <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}" excludes="cxa/examples/">
+            <fileset file="LICENSE" />
+        </jar>
+	<jar destfile="${dist.dir}/${ant.project.name}-examples.jar" basedir="${build.dir}" includes="cxa/examples/**">
             <fileset file="LICENSE" />
         </jar>
     </target>
