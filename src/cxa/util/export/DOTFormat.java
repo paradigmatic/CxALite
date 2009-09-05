@@ -15,12 +15,18 @@ import java.io.PrintWriter;
  */
 public class DOTFormat implements ExportFormat {
 
+    private static String sanitize( String in ) {
+        return in.replace( " ", "_");
+    }
+
     @Override
     public void export( CxA cxa, PrintWriter pw ) throws IOException {
-        pw.println( "digraph " + cxa.ID() + " {" );
+        pw.println( "digraph " + sanitize( cxa.ID() ) + " {" );
+        pw.println( "  rankdir = LR;" );
         for( Conduit c : cxa.getConduits() ) {
-            pw.println( "  " + c.getSenderKernel().ID() + " -> "
-                    + c.getReceiverKernel().ID() + ";" );
+            pw.print( "  " + sanitize( c.getSenderKernel().ID() ) );
+            pw.print( " -> " +  sanitize( c.getReceiverKernel().ID() ) );
+            pw.println( " [" + " label=\"" + sanitize( c.ID() ) + "\" ];");
         }
         pw.println("}");
     }
