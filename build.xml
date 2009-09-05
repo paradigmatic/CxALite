@@ -89,4 +89,14 @@
 
     <target name="redist" depends="clean,dist" />
 
+    <target name="jdepend" depends="compile">
+      <jdepend classpathref="base.path">
+	<exclude name="java.*" />
+	<exclude name="javax.*" />
+	<classespath>
+          <pathelement location="build"/>
+	</classespath>
+      </jdepend>
+    </target>
+
 </project>
