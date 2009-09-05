@@ -7,6 +7,7 @@ package cxa.extra.export;
 import cxa.CxA;
 import cxa.components.conduits.Conduit;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
@@ -20,14 +21,14 @@ public class DOTFormat implements ExportFormat {
     }
 
     @Override
-    public void export( CxA cxa, PrintWriter pw ) throws IOException {
-        pw.println( "digraph " + sanitize( cxa.ID() ) + " {" );
-        pw.println( "  rankdir = LR;" );
+    public void export( CxA cxa, PrintStream ps ) throws IOException {
+        ps.println( "digraph " + sanitize( cxa.ID() ) + " {" );
+        ps.println( "  rankdir = LR;" );
         for( Conduit c : cxa.getConduits() ) {
-            pw.print( "  " + sanitize( c.getSenderKernel().ID() ) );
-            pw.print( " -> " +  sanitize( c.getReceiverKernel().ID() ) );
-            pw.println( " [" + " label=\"" + sanitize( c.ID() ) + "\" ];");
+            ps.print( "  " + sanitize( c.getSenderKernel().ID() ) );
+            ps.print( " -> " +  sanitize( c.getReceiverKernel().ID() ) );
+            ps.println( " [" + " label=\"" + sanitize( c.ID() ) + "\" ];");
         }
-        pw.println("}");
+        ps.println("}");
     }
 }

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cxa.extra.export;
 
 import cxa.CxA;
@@ -29,22 +28,17 @@ public class Exporter {
         return this;
     }
 
-    public void to( PrintWriter pw ) throws IOException {
-        if( cxa == null ) {
-            throw new IllegalStateException("No CxA source.");
+    public void to( PrintStream ps ) throws IOException {
+        if ( cxa == null ) {
+            throw new IllegalStateException( "No CxA source." );
         }
-        format.export( cxa, pw );
-        pw.flush();
+        format.export( cxa, ps );
+        ps.flush();
     }
 
     public void to( File file ) throws IOException {
-        PrintWriter pw = new PrintWriter( file );
-        to( pw );
-        pw.close();
-    }
-
-    public void to( PrintStream ps ) throws IOException {
-        PrintWriter pw = new PrintWriter( ps );
-        to( pw );
+        PrintStream ps = new PrintStream( file );
+        to( ps );
+        ps.close();
     }
 }

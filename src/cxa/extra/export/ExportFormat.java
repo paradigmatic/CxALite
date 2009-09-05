@@ -7,7 +7,7 @@ package cxa.extra.export;
 
 import cxa.CxA;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 
 /**
  *
@@ -15,6 +15,6 @@ import java.io.PrintWriter;
  */
 public interface ExportFormat {
 
-    public void export( CxA cxa, PrintWriter pw ) throws IOException;
+    public void export( CxA cxa, PrintStream ps ) throws IOException;
 
 }
