@@ -8,7 +8,6 @@ import cxa.CxA;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 
 /**
  *
@@ -29,8 +28,8 @@ public class Exporter {
     }
 
     public void to( PrintStream ps ) throws IOException {
-        if ( cxa == null ) {
-            throw new IllegalStateException( "No CxA source." );
+        if( cxa == null ) {
+            throw new IllegalStateException("No CxA source.");
         }
         format.export( cxa, ps );
         ps.flush();
@@ -41,4 +40,5 @@ public class Exporter {
         to( ps );
         ps.close();
     }
+
 }
