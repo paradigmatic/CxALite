@@ -6,6 +6,11 @@
     <property name="build.dir"    value="build"/>
     <property name="dist.dir"     value="dist"/>
     <property name="doc.dir"      value="doc"/>
+    <property name="lib.dir"      value="lib"/>
+
+    <path id="libpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -15,19 +20,28 @@
         
     <target name="compile">
         <mkdir dir="${build.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${build.dir}">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" excludes="cxa/extra/">
             <classpath>
                 <path location="${build.dir}/${ant.project.name}.jar"/>
             </classpath>
         </javac>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includes="cxa/extra/">
+            <classpath>
+                <path location="${build.dir}/${ant.project.name}.jar"/>
+		<path refid="libpath" />
+            </classpath>
+        </javac>	
     </target>
     
     <target name="jar" depends="compile">
         <mkdir dir="${dist.dir}"/>
-        <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}" excludes="cxa/examples/">
+        <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}" excludes="cxa/examples/,cxa/extra/">
             <fileset file="LICENSE" />
         </jar>
 	<jar destfile="${dist.dir}/${ant.project.name}-examples.jar" basedir="${build.dir}" includes="cxa/examples/**">
+            <fileset file="LICENSE" />
+        </jar>
+	<jar destfile="${dist.dir}/${ant.project.name}-extra.jar" basedir="${build.dir}" includes="cxa/extra/**">
             <fileset file="LICENSE" />
         </jar>
     </target>
