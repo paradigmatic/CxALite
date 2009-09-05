@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
@@ -35,9 +36,17 @@ public class Exporter {
             throw new IllegalStateException("No CxA source.");
         }
         format.export( cxa, pw );
+        pw.flush();
     }
 
     public void to( File file ) throws IOException {
-        to( new PrintWriter( file ) );
+        PrintWriter pw = new PrintWriter( file );
+        to( pw );
+        pw.close();
+    }
+
+    public void to( PrintStream ps ) throws IOException {
+        PrintWriter pw = new PrintWriter( ps );
+        to( pw );
     }
 }
