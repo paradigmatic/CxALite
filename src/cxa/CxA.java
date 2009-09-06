@@ -63,6 +63,7 @@ public class CxA {
         LOGGER.setLevel( l );
     }
 
+
     /* Define ports (entries and exits of conduits) */
     private class Port {
 
@@ -197,27 +198,41 @@ public class CxA {
      */
     public void connect( String fromStr, String toStr, Conduit conduit, String conduitID ) {
         conduit.initialize( conduitID, this );
-        /* Attaching the to kernel */
-        Port fromPort = new Port( fromStr );
-        Kernel fromKernel = kernels.get( fromPort.kernel ).getKernel(); //TODO: check if exists
-        if ( fromPort.isArray ) {
-            ConduitEntrance[] entrances = getField( fromKernel, fromPort.field, ConduitEntrance[].class ); //TODO: check if not already connected
-            entrances[fromPort.index] = conduit;
-        } else {
-            setField( fromKernel, fromPort.field, ConduitEntrance.class, conduit ); //TODO: check if not already connected
-        }
+        Kernel fromKernel = assignConduit( fromStr, conduit, ConduitEntrance.class, ConduitEntrance[].class );
         conduit.registerSender( fromKernel ); //TODO: cĥeck if registering was OK.
         /* Attaching the to kernel */
         Port toPort = new Port( toStr );
-        Kernel toKernel = kernels.get( toPort.kernel ).getKernel(); //TODO: check if exists
-        if ( toPort.isArray ) {
-            ConduitExit[] exits = getField( toKernel, toPort.field, ConduitExit[].class ); //TODO: check if not already connected
-            exits[toPort.index] = conduit;
-        } else {
-            setField( toKernel, toPort.field, ConduitExit.class, conduit ); //TODO: check if not already connected
-        }
+        Kernel toKernel = assignConduit( toStr, conduit, ConduitExit.class, ConduitExit[].class );
         conduit.registerReceiver( toKernel ); //TODO: cĥeck if registering was OK.
         conduits.add( conduit );
+    }
+
+
+    private <T,A> Kernel assignConduit( String portString, Conduit conduit, Class<T> klass, Class<A> arrayKlass ) throws IllegalStateException {
+        Port port = new Port( portString );
+        Kernel kernel = getKernel( port.kernel );
+        if ( port.isArray ) {
+            Object[] conds = (Object[]) getField( kernel, port.field, arrayKlass );
+            checkAlreadyAssigned( conds[port.index], portString );
+            conds[port.index] = conduit;
+        } else {
+            checkAlreadyAssigned( getField( kernel, port.field, klass ), portString );
+            setField( kernel, port.field, klass, conduit );
+        }
+        return kernel;
+    }
+
+    private void checkAlreadyAssigned( Object o, String portStr ) throws IllegalStateException {
+        if (  o != null ) {
+            throw new IllegalStateException( "Already assigned: " + portStr );
+        }
+    }
+
+    private Kernel getKernel( String ID ) {
+        if( ! kernels.containsKey( ID ) ) {
+            throw new IllegalStateException("Kernel with ID: " + ID + " waqs not registred." );
+        }
+        return kernels.get( ID ).getKernel();
     }
 
     /**
