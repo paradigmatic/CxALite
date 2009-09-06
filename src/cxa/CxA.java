@@ -97,7 +97,7 @@ public class CxA {
     private Properties props;
     private ConduitFactory defaultFactory = new BasicConduitFactory();
     private Map<String, KernelWrapper> kernels;
-    private List<Conduit> conduits;
+    private Map<String, Conduit> conduits;
     private CountDownLatch stopLatch;
     private final String ID;
 
@@ -111,7 +111,7 @@ public class CxA {
                 new Properties();
         kernels =
                 new HashMap<String, KernelWrapper>();
-        conduits = new ArrayList<Conduit>();
+        conduits = new HashMap<String, Conduit>();
     }
 
     /**
@@ -160,15 +160,21 @@ public class CxA {
      * @param id An unique name for the kernel.
      */
     public void addKernel( Class klass, String id ) {
-        try { //TODO: check add keys
+        final String constructorExceptionMessage = "Class: "
+                + klass.getCanonicalName()
+                + " must have a public constructor with no arguments.";
+        try {
+            if( kernels.containsKey( id ) ) {
+                throw new IllegalArgumentException(" A kernel was already declared with ID: " + id );
+            }
             Kernel k = (Kernel) klass.newInstance();
             k.initialize( id, this );
             KernelWrapper kw = new KernelWrapper( k, this );
             kernels.put( id, kw );
-        } catch ( InstantiationException ex ) { //TODO: check exceptions
-            LOGGER.severe( ex.toString() );
+        } catch ( InstantiationException ex ) {
+            throw new IllegalArgumentException( constructorExceptionMessage );
         } catch ( IllegalAccessException ex ) {
-            LOGGER.severe( ex.toString() );
+            throw new IllegalArgumentException( constructorExceptionMessage );
         }
 
     }
@@ -199,12 +205,15 @@ public class CxA {
     public void connect( String fromStr, String toStr, Conduit conduit, String conduitID ) {
         conduit.initialize( conduitID, this );
         Kernel fromKernel = assignConduit( fromStr, conduit, ConduitEntrance.class, ConduitEntrance[].class );
-        conduit.registerSender( fromKernel ); //TODO: cĥeck if registering was OK.
+        conduit.registerSender( fromKernel );
         /* Attaching the to kernel */
         Port toPort = new Port( toStr );
         Kernel toKernel = assignConduit( toStr, conduit, ConduitExit.class, ConduitExit[].class );
-        conduit.registerReceiver( toKernel ); //TODO: cĥeck if registering was OK.
-        conduits.add( conduit );
+        conduit.registerReceiver( toKernel );
+        if( conduits.containsKey( conduitID ) ) {
+            throw new IllegalArgumentException("A conduit with ID: " + conduitID + " was already declared");
+        }
+        conduits.put( conduitID, conduit );
     }
 
 
@@ -255,7 +264,7 @@ public class CxA {
      * @return The conduit list
      */
     public List<Conduit> getConduits() {
-        return conduits;
+        return new ArrayList<Conduit>( conduits.values() );
     }
 
     /**
