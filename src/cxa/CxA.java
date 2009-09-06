@@ -97,7 +97,7 @@ public class CxA {
     private Properties props;
     private ConduitFactory defaultFactory = new BasicConduitFactory();
     private Map<String, KernelWrapper> kernels;
-    private List<Conduit> conduits;
+    private Map<String, Conduit> conduits;
     private CountDownLatch stopLatch;
     private final String ID;
 
@@ -111,7 +111,7 @@ public class CxA {
                 new Properties();
         kernels =
                 new HashMap<String, KernelWrapper>();
-        conduits = new ArrayList<Conduit>();
+        conduits = new HashMap<String, Conduit>();
     }
 
     /**
@@ -210,7 +210,10 @@ public class CxA {
         Port toPort = new Port( toStr );
         Kernel toKernel = assignConduit( toStr, conduit, ConduitExit.class, ConduitExit[].class );
         conduit.registerReceiver( toKernel );
-        conduits.add( conduit );
+        if( conduits.containsKey( conduitID ) ) {
+            throw new IllegalArgumentException("A conduit with ID: " + conduitID + " was already declared");
+        }
+        conduits.put( conduitID, conduit );
     }
 
 
@@ -261,7 +264,7 @@ public class CxA {
      * @return The conduit list
      */
     public List<Conduit> getConduits() {
-        return conduits;
+        return new ArrayList<Conduit>( conduits.values() );
     }
 
     /**
