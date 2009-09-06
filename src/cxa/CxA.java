@@ -205,11 +205,11 @@ public class CxA {
     public void connect( String fromStr, String toStr, Conduit conduit, String conduitID ) {
         conduit.initialize( conduitID, this );
         Kernel fromKernel = assignConduit( fromStr, conduit, ConduitEntrance.class, ConduitEntrance[].class );
-        conduit.registerSender( fromKernel ); //TODO: cĥeck if registering was OK.
+        conduit.registerSender( fromKernel );
         /* Attaching the to kernel */
         Port toPort = new Port( toStr );
         Kernel toKernel = assignConduit( toStr, conduit, ConduitExit.class, ConduitExit[].class );
-        conduit.registerReceiver( toKernel ); //TODO: cĥeck if registering was OK.
+        conduit.registerReceiver( toKernel );
         conduits.add( conduit );
     }
 
