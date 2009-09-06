@@ -160,15 +160,21 @@ public class CxA {
      * @param id An unique name for the kernel.
      */
     public void addKernel( Class klass, String id ) {
-        try { //TODO: check add keys
+        final String constructorExceptionMessage = "Class: "
+                + klass.getCanonicalName()
+                + " must have a public constructor with no arguments.";
+        try {
+            if( kernels.containsKey( id ) ) {
+                throw new IllegalArgumentException(" A kernel was already declared with ID: " + id );
+            }
             Kernel k = (Kernel) klass.newInstance();
             k.initialize( id, this );
             KernelWrapper kw = new KernelWrapper( k, this );
             kernels.put( id, kw );
-        } catch ( InstantiationException ex ) { //TODO: check exceptions
-            LOGGER.severe( ex.toString() );
+        } catch ( InstantiationException ex ) {
+            throw new IllegalArgumentException( constructorExceptionMessage );
         } catch ( IllegalAccessException ex ) {
-            LOGGER.severe( ex.toString() );
+            throw new IllegalArgumentException( constructorExceptionMessage );
         }
 
     }
