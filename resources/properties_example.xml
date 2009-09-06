@@ -1,0 +1,7 @@
+<cxa>
+  <properties>
+    <val name="size" value="10" />
+    <val name="factor" value=".25" />
+    <val name="fileName" value="foo.txt" />
+  </properties>
+</cxa>
