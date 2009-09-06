@@ -84,7 +84,7 @@ public class Scale {
      * @return the discrete duration in iterations.
      */
     public int discreteDuration() {
-        return (int) Math.floor( L / deltaX ) + 1;
+        return (int) Math.floor( T / deltaT) + 1;
     }
 
 }
