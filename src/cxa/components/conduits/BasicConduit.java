@@ -75,7 +75,7 @@ public class BasicConduit<E> implements Conduit<E,E> {
        } else if( k == receiver ) {
            receiver = null;
        } else {
-           throw new IllegalStateException( "Kernel " + k.ID() + " was never registred in conduit " + k.ID() );
+           throw new IllegalStateException( "Kernel " + k.ID() + " is not currently registered in conduit " + k.ID() );
        }
        if( sender == null && receiver == null ) {
            queue.clear();

@@ -104,7 +104,7 @@ public class KernelWrapper implements Runnable {
                     ConduitEntrance e = (ConduitEntrance) f.get(kernel);
                     e.stop();
 
-                } else if (f.getType() == ConduitEntrance[].class) {
+                } else if (f.getType().equals( ConduitEntrance[].class ) ) {
                     ConduitEntrance[] eAry = (ConduitEntrance[]) f.get(kernel);
                     for (ConduitEntrance e : eAry) {
                         e.stop();
